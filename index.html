@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IME FASHION BOUTIQUE</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         :root {
             --primary-pink: #FFE4E1;
@@ -27,15 +28,17 @@
             background-position: center;
             background-repeat: no-repeat;
             min-height: 100vh;
+            line-height: 1.6;
         }
 
         .header {
             text-align: center;
             padding: 20px;
-            background-color: white;
+            background-color: rgba(255, 230, 236, 0.753);
             border-radius: 10px;
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
         .container {
@@ -49,26 +52,33 @@
             gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
 
         .tab {
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            flex: 0 1 auto;
+            min-width: 120px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .tab:hover {
             background-color: var(--secondary-pink);
             transform: translateY(-2px);
+           
         }
 
         .tab.active {
             background-color: var(--dark-pink);
             color: white;
+            transform: translateY(-1px);
         }
 
         .content-section {
@@ -79,18 +89,23 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
 
         .content-section.active {
             display: block;
             opacity: 1;
+            transform: translateY(0);
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-bottom: 20px;
             background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         th, td {
@@ -106,7 +121,7 @@
         }
 
         td {
-            transition: background-color 0.2s;
+            transition: background-color 0.3s;
         }
 
         tr:hover td {
@@ -120,6 +135,8 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
         }
 
         button:hover {
@@ -190,6 +207,63 @@
             color: var(--total-color);
         }
 
+        .add-button {
+            background-color: var(--button-bg);
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .add-button:hover {
+            background-color: var(--button-hover-bg);
+            transform: translateY(-2px);
+        }
+
+        .add-form {
+            background-color: var(--secondary-pink);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .add-form input {
+            margin: 5px 0;
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .add-form button {
+            margin: 10px 5px;
+        }
+
+        .delete {
+            background-color: rgba(255, 0, 0, 0.788);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 1.2rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete:hover {
+            background-color: rgba(136, 5, 5, 0.911);
+        }
+
+        .delete:focus {
+            outline: none;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 0 10px;
@@ -220,6 +294,15 @@
         </div>
 
         <div id="inventory" class="content-section active">
+            <button class="add-button" onclick="showAddForm('inventory')">Agregar Producto</button>
+            <div id="addInventoryForm" class="add-form">
+                <h3>Agregar Nuevo Producto</h3>
+                <input type="text" id="newCode" placeholder="Código" />
+                <input type="text" id="newSize" placeholder="Talla" />
+                <input type="number" id="newPrice" placeholder="Precio" />
+                <button onclick="addNewItem('inventory')">Guardar</button>
+                <button onclick="hideAddForm('inventory')">Cancelar</button>
+            </div>
             <h2>Inventario de Ropa</h2>
             <table id="inventoryTable">
                 <thead>
@@ -227,16 +310,28 @@
                         <th>Código</th>
                         <th>Talla</th>
                         <th>Precio</th>
-                        <th>Modificar</th>
+                        <th>---------------------Modificar-------------------</th>
                         <th>Separado</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
             <div id="inventoryTotal"></div>
+            <div id="inventorySoldTotal"></div>
+            <div id="totalSales" class="total-sold"></div>
+
         </div>
 
         <div id="bags" class="content-section">
+            <button class="add-button" onclick="showAddForm('bags')">Agregar Bolso</button>
+            <div id="addBagsForm" class="add-form">
+                <h3>Agregar Nuevo Bolso</h3>
+                <input type="text" id="newBagName" placeholder="Nombre" />
+                <input type="text" id="newBagCode" placeholder="Código" />
+                <input type="number" id="newBagPrice" placeholder="Precio" />
+                <button onclick="addNewItem('bags')">Guardar</button>
+                <button onclick="hideAddForm('bags')">Cancelar</button>
+            </div>
             <h2>Inventario de Bolsos</h2>
             <table id="bagsTable">
                 <thead>
@@ -244,16 +339,19 @@
                         <th>Nombre</th>
                         <th>Código</th>
                         <th>Precio</th>
-                        <th>Modificar</th>
+                        <th>---------------------Modificar-------------------</th>
                         <th>Separado</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
             <div id="bagsTotal"></div>
+            <div id="bagsSoldTotal"></div>
+            <div id="totalSales" class="total-sold"></div>
+
         </div>
     </div>
-
+    
     <div id="separadoForm" class="separado-form">
         <h3>Formulario de Separado</h3>
         <input type="text" id="nombre" placeholder="Nombre de la persona" />
@@ -268,14 +366,351 @@
 
     <script>
         let inventory = [
-            { code: 'JS 1078-64', size: '9/30', price: 758, separado: null, abonos: [] },
-            { code: 'JS 2248-60', size: '3/24', price: 678, separado: null, abonos: [] },
-        ];
+    { code: 'JS 1078-64', size: '9/30', price: 758, separado: null, abonos: [] },
+    { code: 'JS 2248-60', size: '3/24', price: 678, separado: null, abonos: [] },
+    { code: 'JS 2228-62', size: '3/26', price: 598, separado: null, abonos: [] },
+    { code: 'JS 1074', size: '1/22', price: 750, separado: null, abonos: [] },
+    { code: 'JS 1193', size: 'S', price: 790, separado: null, abonos: [] },
+    { code: 'JS 1195', size: 'L', price: 790, separado: null, abonos: [] },
+    { code: 'JS 1062', size: 'S', price: 700, separado: null, abonos: [] },
+    { code: 'JS 1063', size: '7', price: 700, separado: null, abonos: [] },
+    { code: 'JS 1080', size: '1', price: 718, separado: null, abonos: [] },
+    { code: 'JS 1187', size: '3', price: 660, separado: null, abonos: [] },
+    { code: 'JS 1187', size: '5', price: 660, separado: null, abonos: [] },
+    { code: 'JS 1187', size: '9', price: 660, separado: null, abonos: [] },
+    { code: 'JS 1187', size: '11', price: 660, separado: null, abonos: [] },
+    { code: 'JS 1187', size: '13', price: 660, separado: null, abonos: [] },
+    { code: 'JS 1117', size: '9', price: 800, separado: null, abonos: [] },
+    { code: 'JS 2406', size: 'M', price: 730, separado: null, abonos: [] },
+    { code: 'JS 1116', size: '3', price: 800, separado: null, abonos: [] },
+    { code: 'JS 1122', size: 'S', price: 770, separado: null, abonos: [] },
+    { code: 'JS 1219', size: 'S', price: 580, separado: null, abonos: [] },
+    { code: 'JS 1219', size: 'L', price: 580, separado: null, abonos: [] },
+    { code: '6929', size: 'M', price: 399, separado: null, abonos: [] },
+    { code: '6929', size: 'L', price: 399, separado: null, abonos: [] },
+    { code: 'JS 1101', size: 'S', price: 740, separado: null, abonos: [] },
+    { code: 'JS 2406', size: '7', price: 740, separado: null, abonos: [] },
+    { code: 'JS 2408', size: '1', price: 680, separado: null, abonos: [] },
+    { code: 'JS 1286', size: '1', price: 960, separado: null, abonos: [] },
+    { code: 'JS 1324', size: '3', price: 750, separado: null, abonos: [] },
+    { code: 'JS 2404', size: '3', price: 760, separado: null, abonos: [] },
+    { code: 'JS 2404', size: '1', price: 760, separado: null, abonos: [] },
+    { code: 'JS 1319', size: '3', price: 760, separado: null, abonos: [] },
+    { code: 'JS 1327', size: '1', price: 740, separado: null, abonos: [] },
+    { code: 'JS 1327', size: '7', price: 740, separado: null, abonos: [] },
+    { code: 'JS 2412', size: '11', price: 750, separado: null, abonos: [] },
+];
 
-        let bags = [
-            { name: 'Muñequera DKNY', code: '1828', price: 850, separado: null, abonos: [] },
-            { name: 'Steve Madden Amarilla', code: '2108', price: 7100, separado: null, abonos: [] },
-        ];
+let bags = [
+    { name: 'Muñequera DKNY', code: '1828', price: 850, separado: null, abonos: [] },
+    { name: 'Steve Madden Amarilla', code: '2108', price: 1100, separado: null, abonos: [] },
+    { name: 'Juicy Couture Babyblue', code: '2139', price: 1000, separado: null, abonos: [] },
+    { name: 'Steve Madden Care', code: '8600', price: 1399, separado: null, abonos: [] },
+    { name: 'Steve Madden Care', code: '8600', price: 1399, separado: null, abonos: [] },
+    { name: 'Kipling', code: '9707', price: 0, separado: null, abonos: [] },
+    { name: 'Karl', code: '4746', price: 1690, separado: null, abonos: [] },
+    { name: 'Valentino', code: '9404', price: 1100, separado: null, abonos: [] },
+    { name: 'Guess', code: '4159', price: 1200, separado: null, abonos: [] },
+];
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+    loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
+    loadTable('bagsTable', bags, ['name', 'code', 'price']);
+    updateTotals();
+});
+
+function loadTable(tableId, data, fields) {
+    const tbody = document.getElementById(tableId)?.querySelector('tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = data.map((item, index) => {
+        return `
+            <tr id="item-${tableId}-${index}" class="${item.sold ? 'sold-item' : ''}">
+                ${fields.map(field => {
+                    const value = field === 'price' 
+                        ? `$${item[field].toLocaleString('es-MX')}`
+                        : item[field];
+                    return `<td>${value}</td>`;
+                }).join('')}
+                <td>
+                    <button class="edit" onclick="editarItem('${tableId}', ${index})">Editar</button>
+                    <button class="sold" onclick="markAsSold('${tableId}', ${index})">Vendida</button>
+                    <button class="separate" onclick="showSeparadoForm('${tableId}', ${index})">Separar</button>
+                </td>
+                <td>${item.separado ? `${item.separado.nombre} - Abono: $${item.separado.abono} - Fecha: ${item.separado.fecha}` : ''}</td>
+            </tr>`;
+    }).join('');
+}
+
+function showSeparadoForm(tableId, index) {
+    const data = tableId === 'inventoryTable' ? inventory : bags;
+    const item = data[index];
+
+    const form = document.getElementById('separadoForm');
+    form.style.display = 'block';
+
+    form.setAttribute('data-table', tableId);
+    form.setAttribute('data-index', index);
+
+    if (item.separado) {
+        document.getElementById('nombre').value = item.separado.nombre;
+        document.getElementById('abono').value = item.separado.abono;
+        document.getElementById('fecha').value = item.separado.fecha;
+    }
+
+    updateAbonosList(item);
+}
+
+function updateAbonosList(item) {
+    const abonosList = document.getElementById('abonosList');
+    abonosList.innerHTML = item.abonos.map(abono => {
+        return `<li>Abono: $${abono.amount.toLocaleString('es-MX')} - Fecha: ${abono.date}</li>`;
+    }).join('');
+
+    const abonoTotal = item.abonos.reduce((sum, abono) => sum + abono.amount, 0);
+    const abonoTotalElement = document.getElementById('abonoTotal');
+    abonoTotalElement.textContent = `Total de abonos: $${abonoTotal.toLocaleString('es-MX')}`;
+
+    const abonoCompleto = abonoTotal >= item.price;
+    if (abonoCompleto) {
+        abonoTotalElement.classList.add('abono-completo');
+        abonoTotalElement.textContent = `¡Abono Completo! Total: $${abonoTotal.toLocaleString('es-MX')}`;
+    } else {
+        abonoTotalElement.classList.remove('abono-completo');
+    }
+}
+
+function guardarSeparado() {
+    const form = document.getElementById('separadoForm');
+    const tableId = form.getAttribute('data-table');
+    const index = form.getAttribute('data-index');
+    const nombre = document.getElementById('nombre').value;
+    const abono = parseFloat(document.getElementById('abono').value);
+    const fecha = document.getElementById('fecha').value;
+
+    if (!nombre || isNaN(abono) || abono <= 0 || !fecha) {
+        alert("Por favor, completa todos los campos correctamente.");
+        return;
+    }
+
+    const data = tableId === 'inventoryTable' ? inventory : bags;
+    const item = data[index];
+
+    item.separado = {
+        nombre,
+        abono,
+        fecha
+    };
+
+    item.abonos.push({ amount: abono, date: fecha });
+
+    updateAbonosList(item);
+    loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+    updateTotals();
+    cancelarSeparado();
+}
+
+function cancelarSeparado() {
+    document.getElementById('separadoForm').style.display = 'none';
+}
+
+function updateTotals() {
+    // Calcular el total del inventario (productos no vendidos)
+    const inventoryTotal = inventory
+        .filter(item => !item.sold) // Excluir artículos vendidos
+        .reduce((sum, item) => sum + item.price, 0);
+
+    // Calcular el total de bolsos (productos no vendidos)
+    const bagsTotal = bags
+        .filter(item => !item.sold) // Excluir artículos vendidos
+        .reduce((sum, item) => sum + item.price, 0);
+
+    // Calcular el total de productos vendidos (inventario)
+    const inventorySoldTotal = inventory
+        .filter(item => item.sold) // Solo artículos vendidos
+        .reduce((sum, item) => sum + item.price, 0);
+
+    // Calcular el total de productos vendidos (bolsos)
+    const bagsSoldTotal = bags
+        .filter(item => item.sold) // Solo artículos vendidos
+        .reduce((sum, item) => sum + item.price, 0);
+
+    // Actualizar los totales en la interfaz
+    document.getElementById('inventoryTotal').textContent = `Total Inventario: $${inventoryTotal.toLocaleString('es-MX')}`;
+    document.getElementById('bagsTotal').textContent = `Total Bolsos: $${bagsTotal.toLocaleString('es-MX')}`;
+
+    // Mostrar los totales de productos vendidos
+    document.getElementById('inventorySoldTotal').textContent = `Total Vendido Inventario: $${inventorySoldTotal.toLocaleString('es-MX')}`;
+    document.getElementById('bagsSoldTotal').textContent = `Total Vendido Bolsos: $${bagsSoldTotal.toLocaleString('es-MX')}`;
+}
+
+function showTab(tab) {
+    const tabs = document.querySelectorAll('.tab');
+    const sections = document.querySelectorAll('.content-section');
+
+    tabs.forEach(tabElement => tabElement.classList.remove('active'));
+    sections.forEach(section => section.classList.remove('active'));
+
+    document.querySelector(`.tab[onclick="showTab('${tab}')"]`).classList.add('active');
+    document.getElementById(tab).classList.add('active');
+}
+
+function markAsSold(tableId, index) {
+    const data = tableId === 'inventoryTable' ? inventory : bags;
+    const item = data[index];
+
+    if (item.sold) {
+        alert("Este artículo ya está marcado como vendido.");
+        return;
+    }
+
+    const confirmation = confirm("¿Estás seguro de marcar este artículo como vendido?");
+    if (confirmation) {
+        item.sold = true;
+
+        loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+        updateTotals(); // Actualizar los totales después de marcar como vendido
+    }
+}
+
+
+function editarItem(tableId, index) {
+    const data = tableId === 'inventoryTable' ? inventory : bags;
+    const item = data[index];
+
+    const nuevoPrecio = prompt(`Modificar precio de "${item.code || item.name}" (actual: $${item.price}):`, item.price);
+    if (nuevoPrecio !== null && !isNaN(parseFloat(nuevoPrecio)) && parseFloat(nuevoPrecio) > 0) {
+        item.price = parseFloat(nuevoPrecio);
+
+        loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+        updateTotals();
+    } else if (nuevoPrecio !== null) {
+        alert("Por favor, introduce un valor válido.");
+    }
+}
+
+function showAddForm(type) {
+            const formId = type === 'inventory' ? 'addInventoryForm' : 'addBagsForm';
+            document.getElementById(formId).style.display = 'block';
+        }
+
+        function hideAddForm(type) {
+            const formId = type === 'inventory' ? 'addInventoryForm' : 'addBagsForm';
+            document.getElementById(formId).style.display = 'none';
+            
+            // Limpiar los campos
+            if (type === 'inventory') {
+                document.getElementById('newCode').value = '';
+                document.getElementById('newSize').value = '';
+                document.getElementById('newPrice').value = '';
+            } else {
+                document.getElementById('newBagName').value = '';
+                document.getElementById('newBagCode').value = '';
+                document.getElementById('newBagPrice').value = '';
+            }
+        }
+
+        function addNewItem(type) {
+            if (type === 'inventory') {
+                const code = document.getElementById('newCode').value;
+                const size = document.getElementById('newSize').value;
+                const price = parseFloat(document.getElementById('newPrice').value);
+
+                if (!code || !size || isNaN(price) || price <= 0) {
+                    alert('Por favor, completa todos los campos correctamente');
+                    return;
+                }
+
+                inventory.push({
+                    code: code,
+                    size: size,
+                    price: price,
+                    separado: null,
+                    abonos: []
+                });
+
+                loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
+            } else {
+                const name = document.getElementById('newBagName').value;
+                const code = document.getElementById('newBagCode').value;
+                const price = parseFloat(document.getElementById('newBagPrice').value);
+
+                if (!name || !code || isNaN(price) || price <= 0) {
+                    alert('Por favor, completa todos los campos correctamente');
+                    return;
+                }
+
+                bags.push({
+                    name: name,
+                    code: code,
+                    price: price,
+                    separado: null,
+                    abonos: []
+                });
+
+                loadTable('bagsTable', bags, ['name', 'code', 'price']);
+            }
+
+            updateTotals();
+            hideAddForm(type);
+        }
+
+         // Función para eliminar un producto de la tabla
+         function deleteItem(tableId, index) {
+            const data = tableId === 'inventoryTable' ? inventory : bags;
+            data.splice(index, 1); // Elimina el producto del arreglo
+
+            // Actualizar la tabla después de eliminar el producto
+            loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+            updateTotals(); // Actualizar los totales después de la eliminación
+        }
+
+        // Función para cargar la tabla (con el botón de eliminar añadido)
+        function loadTable(tableId, data, fields) {
+            const tbody = document.getElementById(tableId)?.querySelector('tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = data.map((item, index) => {
+                return `
+                    <tr id="item-${tableId}-${index}" class="${item.sold ? 'sold-item' : ''}">
+                        ${fields.map(field => {
+                            const value = field === 'price' 
+                                ? `$${item[field].toLocaleString('es-MX')}`
+                                : item[field];
+                            return `<td>${value}</td>`;
+                        }).join('')}
+                        <td>
+                            <button class="edit" onclick="editarItem('${tableId}', ${index})">Editar</button>
+                            <button class="sold" onclick="markAsSold('${tableId}', ${index})">Vendida</button>
+                            <button class="separate" onclick="showSeparadoForm('${tableId}', ${index})">Separar</button>
+                            <button class="delete" onclick="confirmDeleteItem('${tableId}', ${index})">X</button>
+                        </td>
+                        <td>${item.separado ? `${item.separado.nombre} - Abono: $${item.separado.abono} - Fecha: ${item.separado.fecha}` : ''}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function confirmDeleteItem(tableId, index) {
+            const confirmDelete = confirm("¿Estás seguro de que deseas eliminar este producto?");
+            if (confirmDelete) {
+                deleteItem(tableId, index);
+            }
+        }
+
+        function deleteItem(tableId, index) {
+            const data = tableId === 'inventoryTable' ? inventory : bags;
+            const item = data[index];
+
+            // Eliminar el item
+            data.splice(index, 1);
+
+            // Recargar la tabla después de eliminar el producto
+            loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+            updateTotals();
+        }
+
+        // El resto de tus funciones se mantienen igual...
 
         document.addEventListener('DOMContentLoaded', function() {
             loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
@@ -283,150 +718,7 @@
             updateTotals();
         });
 
-        function loadTable(tableId, data, fields) {
-            const tbody = document.getElementById(tableId)?.querySelector('tbody');
-            if (!tbody) return;
 
-            tbody.innerHTML = data.map((item, index) => {
-                return <tr id="item-${tableId}-${index}" class="${item.sold ? 'sold-item' : ''}">
-                    ${fields.map(field => {
-                        const value = field === 'price' 
-                            ? $${item[field].toLocaleString('es-MX')}
-                            : item[field];
-                        return <td>${value}</td>;
-                    }).join('')}
-                    <td>
-                        <button class="edit" onclick="editarItem('${tableId}', ${index})">Editar</button>
-                        <button class="sold" onclick="markAsSold('${tableId}', ${index})">Vendida</button>
-                        <button class="separate" onclick="showSeparadoForm('${tableId}', ${index})">Separar</button>
-                    </td>
-                    <td>${item.separado ? ${item.separado.nombre} - Abono: $${item.separado.abono} - Fecha: ${item.separado.fecha} : ''}</td>
-                </tr>;
-            }).join('');
-        }
-
-        function showSeparadoForm(tableId, index) {
-            const data = tableId === 'inventoryTable' ? inventory : bags;
-            const item = data[index];
-
-            const form = document.getElementById('separadoForm');
-            form.style.display = 'block';
-
-            form.setAttribute('data-table', tableId);
-            form.setAttribute('data-index', index);
-
-            if (item.separado) {
-                document.getElementById('nombre').value = item.separado.nombre;
-                document.getElementById('abono').value = item.separado.abono;
-                document.getElementById('fecha').value = item.separado.fecha;
-            }
-
-            updateAbonosList(item);
-        }
-
-        function updateAbonosList(item) {
-            const abonosList = document.getElementById('abonosList');
-            abonosList.innerHTML = item.abonos.map(abono => {
-                return <li>Abono: $${abono.amount.toLocaleString('es-MX')} - Fecha: ${abono.date}</li>;
-            }).join('');
-
-            const abonoTotal = item.abonos.reduce((sum, abono) => sum + abono.amount, 0);
-            const abonoTotalElement = document.getElementById('abonoTotal');
-            abonoTotalElement.textContent = Total de abonos: $${abonoTotal.toLocaleString('es-MX')};
-
-            const abonoCompleto = item.abonos.reduce((sum, abono) => sum + abono.amount, 0) >= item.price;
-            if (abonoCompleto) {
-                abonoTotalElement.classList.add('abono-completo');
-                abonoTotalElement.textContent = ¡Abono Completo! Total: $${abonoTotal.toLocaleString('es-MX')};
-            } else {
-                abonoTotalElement.classList.remove('abono-completo');
-            }
-        }
-
-        function guardarSeparado() {
-            const form = document.getElementById('separadoForm');
-            const tableId = form.getAttribute('data-table');
-            const index = form.getAttribute('data-index');
-            const nombre = document.getElementById('nombre').value;
-            const abono = parseFloat(document.getElementById('abono').value);
-            const fecha = document.getElementById('fecha').value;
-
-            if (!nombre || isNaN(abono) || abono <= 0 || !fecha) {
-                alert("Por favor, completa todos los campos correctamente.");
-                return;
-            }
-
-            const data = tableId === 'inventoryTable' ? inventory : bags;
-            const item = data[index];
-
-            item.separado = {
-                nombre,
-                abono,
-                fecha
-            };
-
-            item.abonos.push({ amount: abono, date: fecha });
-
-            updateAbonosList(item);
-            loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
-            updateTotals();
-            cancelarSeparado();
-        }
-
-        function cancelarSeparado() {
-            document.getElementById('separadoForm').style.display = 'none';
-        }
-
-        function updateTotals() {
-            const inventoryTotal = inventory.reduce((sum, item) => sum + item.price, 0);
-            const bagsTotal = bags.reduce((sum, item) => sum + item.price, 0);
-
-            document.getElementById('inventoryTotal').textContent = Total Inventario: $${inventoryTotal.toLocaleString('es-MX')};
-            document.getElementById('bagsTotal').textContent = Total Bolsos: $${bagsTotal.toLocaleString('es-MX')};
-        }
-
-        function showTab(tab) {
-            const tabs = document.querySelectorAll('.tab');
-            const sections = document.querySelectorAll('.content-section');
-
-            tabs.forEach(tabElement => tabElement.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-
-            document.querySelector(.tab[onclick="showTab('${tab}')"]).classList.add('active');
-            document.getElementById(tab).classList.add('active');
-        }
-
-        function markAsSold(tableId, index) {
-            const data = tableId === 'inventoryTable' ? inventory : bags;
-            const item = data[index];
-
-            if (item.sold) {
-                alert("Este artículo ya está marcado como vendido.");
-                return;
-            }
-
-            const confirmation = confirm("¿Estás seguro de marcar este artículo como vendido?");
-            if (confirmation) {
-                item.sold = true;
-
-                loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
-            }
-        }
-
-        function editarItem(tableId, index) {
-            const data = tableId === 'inventoryTable' ? inventory : bags;
-            const item = data[index];
-
-            const nuevoPrecio = prompt(Modificar precio de "${item.code || item.name}" (actual: $${item.price}):, item.price);
-            if (nuevoPrecio !== null && !isNaN(parseFloat(nuevoPrecio)) && parseFloat(nuevoPrecio) > 0) {
-                item.price = parseFloat(nuevoPrecio);
-
-                loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
-                updateTotals();
-            } else if (nuevoPrecio !== null) {
-                alert("Por favor, introduce un valor válido.");
-            }
-        }
     </script>
 </body>
 </html>
