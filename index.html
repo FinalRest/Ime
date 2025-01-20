@@ -420,6 +420,25 @@ let bags = [
     updateTotals();
 });
 
+
+function saveToLocalStorage() {
+    localStorage.setItem('inventoryData', JSON.stringify(inventory));
+    localStorage.setItem('bagsData', JSON.stringify(bags));
+}
+
+function loadFromLocalStorage() {
+    const savedInventory = localStorage.getItem('inventoryData');
+    const savedBags = localStorage.getItem('bagsData');
+
+    if (savedInventory) {
+        inventory = JSON.parse(savedInventory);
+    }
+    if (savedBags) {
+        bags = JSON.parse(savedBags);
+    }
+}
+
+
 function loadTable(tableId, data, fields) {
     const tbody = document.getElementById(tableId)?.querySelector('tbody');
     if (!tbody) return;
@@ -508,6 +527,7 @@ function guardarSeparado() {
     updateAbonosList(item);
     loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
     updateTotals();
+    saveToLocalStorage(); // Guardar después de separar
     cancelarSeparado();
 }
 
@@ -568,9 +588,9 @@ function markAsSold(tableId, index) {
     const confirmation = confirm("¿Estás seguro de marcar este artículo como vendido?");
     if (confirmation) {
         item.sold = true;
-
         loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
-        updateTotals(); // Actualizar los totales después de marcar como vendido
+        updateTotals();
+        saveToLocalStorage(); // Guardar después de marcar como vendido
     }
 }
 
@@ -582,9 +602,9 @@ function editarItem(tableId, index) {
     const nuevoPrecio = prompt(`Modificar precio de "${item.code || item.name}" (actual: $${item.price}):`, item.price);
     if (nuevoPrecio !== null && !isNaN(parseFloat(nuevoPrecio)) && parseFloat(nuevoPrecio) > 0) {
         item.price = parseFloat(nuevoPrecio);
-
         loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
         updateTotals();
+        saveToLocalStorage(); // Guardar después de editar
     } else if (nuevoPrecio !== null) {
         alert("Por favor, introduce un valor válido.");
     }
@@ -612,60 +632,58 @@ function showAddForm(type) {
         }
 
         function addNewItem(type) {
-            if (type === 'inventory') {
-                const code = document.getElementById('newCode').value;
-                const size = document.getElementById('newSize').value;
-                const price = parseFloat(document.getElementById('newPrice').value);
+    if (type === 'inventory') {
+        const code = document.getElementById('newCode').value;
+        const size = document.getElementById('newSize').value;
+        const price = parseFloat(document.getElementById('newPrice').value);
 
-                if (!code || !size || isNaN(price) || price <= 0) {
-                    alert('Por favor, completa todos los campos correctamente');
-                    return;
-                }
-
-                inventory.push({
-                    code: code,
-                    size: size,
-                    price: price,
-                    separado: null,
-                    abonos: []
-                });
-
-                loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
-            } else {
-                const name = document.getElementById('newBagName').value;
-                const code = document.getElementById('newBagCode').value;
-                const price = parseFloat(document.getElementById('newBagPrice').value);
-
-                if (!name || !code || isNaN(price) || price <= 0) {
-                    alert('Por favor, completa todos los campos correctamente');
-                    return;
-                }
-
-                bags.push({
-                    name: name,
-                    code: code,
-                    price: price,
-                    separado: null,
-                    abonos: []
-                });
-
-                loadTable('bagsTable', bags, ['name', 'code', 'price']);
-            }
-
-            updateTotals();
-            hideAddForm(type);
+        if (!code || !size || isNaN(price) || price <= 0) {
+            alert('Por favor, completa todos los campos correctamente');
+            return;
         }
 
-         // Función para eliminar un producto de la tabla
-         function deleteItem(tableId, index) {
-            const data = tableId === 'inventoryTable' ? inventory : bags;
-            data.splice(index, 1); // Elimina el producto del arreglo
+        inventory.push({
+            code: code,
+            size: size,
+            price: price,
+            separado: null,
+            abonos: []
+        });
 
-            // Actualizar la tabla después de eliminar el producto
-            loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
-            updateTotals(); // Actualizar los totales después de la eliminación
+        loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
+    } else {
+        const name = document.getElementById('newBagName').value;
+        const code = document.getElementById('newBagCode').value;
+        const price = parseFloat(document.getElementById('newBagPrice').value);
+
+        if (!name || !code || isNaN(price) || price <= 0) {
+            alert('Por favor, completa todos los campos correctamente');
+            return;
         }
 
+        bags.push({
+            name: name,
+            code: code,
+            price: price,
+            separado: null,
+            abonos: []
+        });
+
+        loadTable('bagsTable', bags, ['name', 'code', 'price']);
+    }
+
+    updateTotals();
+    saveToLocalStorage(); // Guardar después de añadir
+    hideAddForm(type);
+}
+
+function deleteItem(tableId, index) {
+    const data = tableId === 'inventoryTable' ? inventory : bags;
+    data.splice(index, 1);
+    loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+    updateTotals();
+    saveToLocalStorage(); // Guardar después de eliminar
+}
         // Función para cargar la tabla (con el botón de eliminar añadido)
         function loadTable(tableId, data, fields) {
             const tbody = document.getElementById(tableId)?.querySelector('tbody');
@@ -712,11 +730,14 @@ function showAddForm(type) {
 
         // El resto de tus funciones se mantienen igual...
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
-            loadTable('bagsTable', bags, ['name', 'code', 'price']);
-            updateTotals();
-        });
+        
+// Modificar el event listener inicial para cargar los datos guardados
+document.addEventListener('DOMContentLoaded', function() {
+    loadFromLocalStorage(); // Cargar datos guardados
+    loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
+    loadTable('bagsTable', bags, ['name', 'code', 'price']);
+    updateTotals();
+});
 
 
     </script>
