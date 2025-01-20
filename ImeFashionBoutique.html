@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IME FASHION BOUTIQUE</title>
+    <style>
+        :root {
+            --primary-pink: #FFE4E1;
+            --secondary-pink: #FFC0CB;
+            --dark-pink: #FFB6C1;
+            --text-color: #4A4A4A;
+            --button-bg: #FFB6C1;
+            --button-hover-bg: #FF80A9;
+            --button-active-bg: #FF1E4B;
+            --total-color: #28a745;
+            --sold-color: rgba(255, 182, 193, 0.5);
+            --abono-color: #FF7F50;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('https://raw.githubusercontent.com/FinalRest/Ime/refs/heads/main/_7358fb60-e8e3-479e-991e-e07d4640984a.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .tab:hover {
+            background-color: var(--secondary-pink);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background-color: var(--dark-pink);
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--secondary-pink);
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        td {
+            transition: background-color 0.2s;
+        }
+
+        tr:hover td {
+            background-color: var(--primary-pink);
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        button:active {
+            background-color: var(--button-active-bg);
+            transform: translateY(2px);
+        }
+
+        button.edit {
+            background-color: var(--button-bg);
+            color: white;
+        }
+
+        button.edit:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        button.sold {
+            background-color: #FF6A6A;
+            color: white;
+        }
+
+        button.sold:hover {
+            background-color: #FF4F4F;
+        }
+
+        #inventoryTotal, #bagsTotal {
+            color: var(--total-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .sold-item {
+            background-color: var(--sold-color);
+        }
+
+        .separado-form {
+            margin-top: 20px;
+            background-color: var(--secondary-pink);
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .separado-form input, .separado-form button {
+            margin-bottom: 10px;
+        }
+
+        .abonos-list {
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        .abonos-list li {
+            margin-bottom: 5px;
+        }
+
+        .abono-total {
+            font-weight: bold;
+            color: var(--abono-color);
+        }
+
+        .abono-completo {
+            color: var(--total-color);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .tab {
+                flex: 1;
+                text-align: center;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>IME FASHION BOUTIQUE</h1>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('inventory')">Inventario</button>
+            <button class="tab" onclick="showTab('bags')">Bolsos</button>
+        </div>
+
+        <div id="inventory" class="content-section active">
+            <h2>Inventario de Ropa</h2>
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Talla</th>
+                        <th>Precio</th>
+                        <th>Modificar</th>
+                        <th>Separado</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="inventoryTotal"></div>
+        </div>
+
+        <div id="bags" class="content-section">
+            <h2>Inventario de Bolsos</h2>
+            <table id="bagsTable">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Código</th>
+                        <th>Precio</th>
+                        <th>Modificar</th>
+                        <th>Separado</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="bagsTotal"></div>
+        </div>
+    </div>
+
+    <div id="separadoForm" class="separado-form">
+        <h3>Formulario de Separado</h3>
+        <input type="text" id="nombre" placeholder="Nombre de la persona" />
+        <input type="number" id="abono" placeholder="Monto de abono" />
+        <input type="date" id="fecha" />
+        <button onclick="guardarSeparado()">Guardar Separado</button>
+        <button onclick="cancelarSeparado()">Cancelar</button>
+
+        <div class="abonos-list" id="abonosList"></div>
+        <div class="abono-total" id="abonoTotal"></div>
+    </div>
+
+    <script>
+        let inventory = [
+            { code: 'JS 1078-64', size: '9/30', price: 758, separado: null, abonos: [] },
+            { code: 'JS 2248-60', size: '3/24', price: 678, separado: null, abonos: [] },
+        ];
+
+        let bags = [
+            { name: 'Muñequera DKNY', code: '1828', price: 850, separado: null, abonos: [] },
+            { name: 'Steve Madden Amarilla', code: '2108', price: 7100, separado: null, abonos: [] },
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTable('inventoryTable', inventory, ['code', 'size', 'price']);
+            loadTable('bagsTable', bags, ['name', 'code', 'price']);
+            updateTotals();
+        });
+
+        function loadTable(tableId, data, fields) {
+            const tbody = document.getElementById(tableId)?.querySelector('tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = data.map((item, index) => {
+                return <tr id="item-${tableId}-${index}" class="${item.sold ? 'sold-item' : ''}">
+                    ${fields.map(field => {
+                        const value = field === 'price' 
+                            ? $${item[field].toLocaleString('es-MX')}
+                            : item[field];
+                        return <td>${value}</td>;
+                    }).join('')}
+                    <td>
+                        <button class="edit" onclick="editarItem('${tableId}', ${index})">Editar</button>
+                        <button class="sold" onclick="markAsSold('${tableId}', ${index})">Vendida</button>
+                        <button class="separate" onclick="showSeparadoForm('${tableId}', ${index})">Separar</button>
+                    </td>
+                    <td>${item.separado ? ${item.separado.nombre} - Abono: $${item.separado.abono} - Fecha: ${item.separado.fecha} : ''}</td>
+                </tr>;
+            }).join('');
+        }
+
+        function showSeparadoForm(tableId, index) {
+            const data = tableId === 'inventoryTable' ? inventory : bags;
+            const item = data[index];
+
+            const form = document.getElementById('separadoForm');
+            form.style.display = 'block';
+
+            form.setAttribute('data-table', tableId);
+            form.setAttribute('data-index', index);
+
+            if (item.separado) {
+                document.getElementById('nombre').value = item.separado.nombre;
+                document.getElementById('abono').value = item.separado.abono;
+                document.getElementById('fecha').value = item.separado.fecha;
+            }
+
+            updateAbonosList(item);
+        }
+
+        function updateAbonosList(item) {
+            const abonosList = document.getElementById('abonosList');
+            abonosList.innerHTML = item.abonos.map(abono => {
+                return <li>Abono: $${abono.amount.toLocaleString('es-MX')} - Fecha: ${abono.date}</li>;
+            }).join('');
+
+            const abonoTotal = item.abonos.reduce((sum, abono) => sum + abono.amount, 0);
+            const abonoTotalElement = document.getElementById('abonoTotal');
+            abonoTotalElement.textContent = Total de abonos: $${abonoTotal.toLocaleString('es-MX')};
+
+            const abonoCompleto = item.abonos.reduce((sum, abono) => sum + abono.amount, 0) >= item.price;
+            if (abonoCompleto) {
+                abonoTotalElement.classList.add('abono-completo');
+                abonoTotalElement.textContent = ¡Abono Completo! Total: $${abonoTotal.toLocaleString('es-MX')};
+            } else {
+                abonoTotalElement.classList.remove('abono-completo');
+            }
+        }
+
+        function guardarSeparado() {
+            const form = document.getElementById('separadoForm');
+            const tableId = form.getAttribute('data-table');
+            const index = form.getAttribute('data-index');
+            const nombre = document.getElementById('nombre').value;
+            const abono = parseFloat(document.getElementById('abono').value);
+            const fecha = document.getElementById('fecha').value;
+
+            if (!nombre || isNaN(abono) || abono <= 0 || !fecha) {
+                alert("Por favor, completa todos los campos correctamente.");
+                return;
+            }
+
+            const data = tableId === 'inventoryTable' ? inventory : bags;
+            const item = data[index];
+
+            item.separado = {
+                nombre,
+                abono,
+                fecha
+            };
+
+            item.abonos.push({ amount: abono, date: fecha });
+
+            updateAbonosList(item);
+            loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+            updateTotals();
+            cancelarSeparado();
+        }
+
+        function cancelarSeparado() {
+            document.getElementById('separadoForm').style.display = 'none';
+        }
+
+        function updateTotals() {
+            const inventoryTotal = inventory.reduce((sum, item) => sum + item.price, 0);
+            const bagsTotal = bags.reduce((sum, item) => sum + item.price, 0);
+
+            document.getElementById('inventoryTotal').textContent = Total Inventario: $${inventoryTotal.toLocaleString('es-MX')};
+            document.getElementById('bagsTotal').textContent = Total Bolsos: $${bagsTotal.toLocaleString('es-MX')};
+        }
+
+        function showTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.content-section');
+
+            tabs.forEach(tabElement => tabElement.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+
+            document.querySelector(.tab[onclick="showTab('${tab}')"]).classList.add('active');
+            document.getElementById(tab).classList.add('active');
+        }
+
+        function markAsSold(tableId, index) {
+            const data = tableId === 'inventoryTable' ? inventory : bags;
+            const item = data[index];
+
+            if (item.sold) {
+                alert("Este artículo ya está marcado como vendido.");
+                return;
+            }
+
+            const confirmation = confirm("¿Estás seguro de marcar este artículo como vendido?");
+            if (confirmation) {
+                item.sold = true;
+
+                loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+            }
+        }
+
+        function editarItem(tableId, index) {
+            const data = tableId === 'inventoryTable' ? inventory : bags;
+            const item = data[index];
+
+            const nuevoPrecio = prompt(Modificar precio de "${item.code || item.name}" (actual: $${item.price}):, item.price);
+            if (nuevoPrecio !== null && !isNaN(parseFloat(nuevoPrecio)) && parseFloat(nuevoPrecio) > 0) {
+                item.price = parseFloat(nuevoPrecio);
+
+                loadTable(tableId, data, tableId === 'inventoryTable' ? ['code', 'size', 'price'] : ['name', 'code', 'price']);
+                updateTotals();
+            } else if (nuevoPrecio !== null) {
+                alert("Por favor, introduce un valor válido.");
+            }
+        }
+    </script>
+</body>
+</html>
